@@ -17,8 +17,8 @@ def attack_power(attack_name: str,
         effectiveness = type_chart.loc[type_chart['Attacking'] == attack['type'], defending_type[0]].values[0]
     attack_power = attack['power'] * effectiveness
     hit = (np.random.random() < attack['accuracy']) * (np.random.random() < attacking_pokemon.accuracy)
-    attack_power = attack_power * hit
-    return int(attack_power)
+    attack_power = int(attack_power * hit)
+    return attack_power, hit, effectiveness
 
 def attack_effect(attack_name: str, 
                   attacking_pokemon: Pokemon, 
@@ -31,7 +31,7 @@ def attack_effect(attack_name: str,
     defending_pokemon_attr = defending_pokemon.__dict__
 
     # calculate attack_power
-    power = attack_power(attack_name, attacking_pokemon, defending_pokemon)
+    power, hit, effectiveness = attack_power(attack_name, attacking_pokemon, defending_pokemon)
     if 'fixed_power' in attack:
         power = attack['fixed_power']
     new_defending_current_hp = max(defending_pokemon.current_hp - power, 0)
@@ -55,4 +55,4 @@ def attack_effect(attack_name: str,
     defending_pokemon.__dict__.update(defending_pokemon_attr)
 
     # return new
-    return attacking_pokemon.__dict__, defending_pokemon.__dict__
+    return power, hit, effectiveness

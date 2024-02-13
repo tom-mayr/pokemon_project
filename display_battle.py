@@ -1,3 +1,5 @@
+from attacks import attacks
+
 def health_bar(current_health, max_health, bar_length=50):
     """Draws a text-based health bar with colored health."""
     health_ratio = current_health / max_health
@@ -22,8 +24,8 @@ def health_bar(current_health, max_health, bar_length=50):
 
 def print_ai_turn(
         ai_pokemon,
-        ai_name: str = 'Venusaur', 
-        ai_current_hp: int = 60,
+        ai_current_hp: int,
+        ai_status: str,
         ai_max_hp: int = 100,
         ):
     
@@ -32,16 +34,16 @@ def print_ai_turn(
     print(f"{ai_name}:") # ai Pokemon name
     print(health_bar(ai_current_hp, ai_max_hp)) # ai Pokemon health bar
     print(f"{ai_current_hp} / {ai_max_hp}") # ai Pokemon HP
-    # if result == False:
-    #     print()
-    #     print(f"{ai_name} uses {ai_attack_name}!")
+    if ai_status is not None:
+        print(f"Status: {ai_status}")
+    else:
+        print('Status:')
 
 def print_opponent_turn(
         opponent_pokemon,
-        opponent_name: str = 'Charizard',
-        opponent_current_hp: int = 20,
+        opponent_current_hp: int,
+        opponent_status: str,
         opponent_max_hp: int = 100,
-        opponent_status: int = 0,
         ):
     
     opponent_name = opponent_pokemon.name
@@ -49,21 +51,29 @@ def print_opponent_turn(
     print(f"{opponent_name}:") # Opponent Pokemon name
     print(health_bar(opponent_current_hp, opponent_max_hp)) # Opponent Pokemon health bar
     print(f"{opponent_current_hp} / {opponent_max_hp}") # Opponent Pokemon HP
-    # if opponent_status == 1:
-    #    print('Status: ' + "\033[93m" + 'Paralysed' + "\033[0m")
-    # if result == False:
-    #     print()
-    #     print(f"{opponent_name} uses {opponent_attack}!")
+    if opponent_status is not None:
+        print(f"Status: {opponent_status}")
+    else:
+        print('Status:')
 
-def print_ai_attack(ai_pokemon, ai_attack: int):
+def print_attack(pokemon, attack: str, hit: bool, effectiveness: float):
 
-    ai_name = ai_pokemon.name
-    ai_attack_name = ai_pokemon.moveset[ai_attack]
+    name = pokemon.name
+    attack_name = attack
 
-    print(f"{ai_name} uses {ai_attack_name}!")
+    if attacks[attack]['power'] != 0:
+        if hit:
+            if effectiveness == 1:
+                additional_text = ''
+            elif effectiveness == 2 or effectiveness == 4:
+                additional_text = 'It\'s super effective!'
+            elif effectiveness == 0.5 or effectiveness == 0.25:
+                additional_text = 'It\'s not very effective...'
+            elif effectiveness == 0:
+                additional_text = 'It has no effect.'
+        else:
+            additional_text = 'It misses!'
+    else:
+        additional_text = ''
 
-def print_opponent_attack(opponent_pokemon, opponent_attack: int = 0):
-    
-    opponent_name = opponent_pokemon.name
-    opponent_attack_name = opponent_pokemon.moveset[opponent_attack]
-    print(f"{opponent_name} uses {opponent_attack_name}!")
+    print(f"{name} uses {attack_name}! {additional_text}")
