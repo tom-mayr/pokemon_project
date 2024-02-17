@@ -57,7 +57,7 @@ def print_attack(pokemon_name, attack: str, hit: bool, effectiveness: float):
     name = pokemon_name
     attack_name = attack
 
-    if attacks[attack]['power'] != 0:
+    if attack in attacks and attacks[attack]['power'] != 0:
         if hit:
             if effectiveness == 1:
                 additional_text = ''
